@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Guess The Number</string>
+    <string name="highest">Highest : %d</string>
+    <string name="level"> Level : </string>
+    <string name="guess_num">Guess Number : </string>
+    <string name="check">Check</string>
+    <string name="score">Score</string>
+    <string name="opps">Opps!</string>
+    <string name="close">Close!</string>
+    <string name="accu">Accurate!</string>
+</resources>
