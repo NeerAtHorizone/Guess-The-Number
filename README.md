@@ -1,5 +1,5 @@
 # Guess the Number
-A Kotlin Android game where YOU guess a number and get a score that help you to now if you can trust on your guess in an MCQ exams😎.
+A Kotlin Android game where YOU guess a number and get a score that help you to know if you can trust on your guess in an MCQ exams 😎 ( Yes, this was basically the motivation to build the app 😅😅😅).
 ## Features
 - Fun guessing game
 - Highscore tracking
