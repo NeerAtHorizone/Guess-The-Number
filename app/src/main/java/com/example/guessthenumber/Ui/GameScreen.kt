@@ -250,8 +250,10 @@ fun GameLayout(
                 OutlinedTextField(
                     value = text.value,
                     onValueChange = {
-                        if (it.all { char -> char.isDigit() })
+                        if (it.all { char -> char.isDigit() }){
                             text.value = it
+                            playerGuess = it.toInt()
+                        }
                     },
                     label = {
                         when (level) {
@@ -310,6 +312,7 @@ fun GameLayout(
                         showComparisonAnimation = false
                         showComparisonAnimation = true
                     },
+                    enabled = playerGuess != -1,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
@@ -377,7 +380,11 @@ fun GameLayout(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(if (guessedLebel == "FAR") Color(0xFFFDAAAA) else if (guessedLebel == "CLOSE") Color(0xFFF4991A) else if (guessedLebel == "ACCURATE") Color(0xFF59AC77) else Color.Gray)
+                        .background(
+                            if (guessedLebel == "FAR") Color(0xFFFDAAAA) else if (guessedLebel == "CLOSE") Color(
+                                0xFFF4991A
+                            ) else if (guessedLebel == "ACCURATE") Color(0xFF59AC77) else Color.Gray
+                        )
                         .padding(dimensionResource(R.dimen.paddingLarge)),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -413,7 +420,7 @@ fun GameLayout(
 
     if (showComparisonAnimation) {
         LaunchedEffect(Unit) {
-            delay(1000L) // Wait for 2.5 seconds
+            delay(1000L) // Wait for 1 second
             showComparisonAnimation = false
         }
     }
@@ -430,8 +437,8 @@ fun GameLayout(
                 secretNumberForLastGuess = null // Reset for new game
                 guessedLebel = "" // Reset for new game
             },
-            dialogTitle = "Final Score",
-            dialogText = "Your Average is : "
+            dialogTitle = "Score",
+            dialogText = "It turns out that your guess is ${gameUiState.highest * 2}% accurate"
         )
     }
 }
@@ -452,8 +459,8 @@ fun AvgDialoageBox(
                 contentDescription = null
             )
         },
-        title = { Text("$dialogTitle Your Average Winning Guess") },
-        text = { "$dialogText your total score is : " },
+        title = { Text(text = dialogTitle) },
+        text = { Text(text = dialogText, textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Bold)},
         onDismissRequest = { onDismissRequest() },
         confirmButton = {
             TextButton(
@@ -461,7 +468,7 @@ fun AvgDialoageBox(
                     onConfirmation()
                 }
             ) {
-                Text("Play again")
+                 Text("Play again")
             }
         },
         dismissButton = {
