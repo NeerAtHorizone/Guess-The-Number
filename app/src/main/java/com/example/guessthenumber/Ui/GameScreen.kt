@@ -70,6 +70,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import kotlinx.coroutines.delay
 
 @Composable
@@ -250,9 +251,9 @@ fun GameLayout(
                 OutlinedTextField(
                     value = text.value,
                     onValueChange = {
-                        if (it.all { char -> char.isDigit() }){
+                        if (it.all { char -> char.isDigit() && it.isNotBlank() }){
                             text.value = it
-                            playerGuess = it.toInt()
+                            playerGuess = if(it.isNotBlank()) it.toInt() else -1
                         }
                     },
                     label = {
