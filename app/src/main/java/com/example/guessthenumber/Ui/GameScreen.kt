@@ -168,7 +168,7 @@ fun InformationHeader(
             horizontalAlignment = Alignment.Start,
         ) {
             Text(
-                text = stringResource(R.string.highest, highestScore),
+                text = stringResource(R.string.highest * 2, highestScore),
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(vertical = dimensionResource(R.dimen.paddingSmall))
@@ -382,9 +382,12 @@ fun GameLayout(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            if (guessedLebel == "FAR") Color(0xFFFDAAAA) else if (guessedLebel == "CLOSE") Color(
-                                0xFFF4991A
-                            ) else if (guessedLebel == "ACCURATE") Color(0xFF59AC77) else Color.Gray
+                            when (guessedLebel) {
+                                "FAR" -> Color(0xFFFDAAAA)
+                                "CLOSE" -> Color(0xFFF4991A)
+                                "ACCURATE" -> Color(0xFF59AC77)
+                                else -> Color.Gray
+                            }
                         )
                         .padding(dimensionResource(R.dimen.paddingLarge)),
                     horizontalArrangement = Arrangement.Center,
@@ -438,8 +441,8 @@ fun GameLayout(
                 secretNumberForLastGuess = null // Reset for new game
                 guessedLebel = "" // Reset for new game
             },
-            dialogTitle = "Score",
-            dialogText = "It turns out that your guess is ${gameUiState.highest * 2}% accurate"
+            dialogTitle = "Scored: ${gameUiState.score * 2}",
+            dialogText = "Well guess is ${gameUiState.score * 2}% accurate"
         )
     }
 }
