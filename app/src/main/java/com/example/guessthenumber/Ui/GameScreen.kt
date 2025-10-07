@@ -168,7 +168,7 @@ fun InformationHeader(
             horizontalAlignment = Alignment.Start,
         ) {
             Text(
-                text = stringResource(R.string.highest * 2, highestScore),
+                text = stringResource(R.string.highest, highestScore),
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(vertical = dimensionResource(R.dimen.paddingSmall))
@@ -213,6 +213,7 @@ fun GameLayout(
     val text = remember { mutableStateOf("") }
     var playerGuess: Int by remember { mutableIntStateOf(-1) }
     var secretNumberForLastGuess by remember { mutableStateOf<Int?>(null) }
+
     // Animation variables to show comparison between numbers
     var showComparisonAnimation by remember { mutableStateOf(false) }
 
@@ -263,7 +264,7 @@ fun GameLayout(
                             Levels.HARD -> Text("Guess between 1- 100")
                         }
                     },
-                    placeholder = { Text("So, What it is?") },
+                    placeholder = { Text("the number?🤔")},
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
