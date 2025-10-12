@@ -3,6 +3,7 @@ package com.example.guessthenumber.Ui
 import android.app.Activity
 import androidx.compose.ui.platform.LocalContext
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -65,6 +66,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -76,6 +78,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
+
+
+
     Column {
         Scaffold(
             topBar = { GameTopBar() },
@@ -223,6 +228,17 @@ fun GameLayout(
             .padding(dimensionResource(R.dimen.paddingMedium))
     )
     {
+
+        // sound effect on click
+        val context = LocalContext.current
+        val mediaPlayer = remember { MediaPlayer.create(context, R.raw.confirm_tap_sound ) }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                mediaPlayer.release()
+            }
+        }
+
         Card(
             modifier = Modifier
                 .padding(24.dp)
@@ -299,6 +315,9 @@ fun GameLayout(
                 Button(
                     onClick = {
                         // todo : onCheck button click
+
+                        mediaPlayer.start()
+
                         val intValue: Int? = text.value.toIntOrNull()
                         playerGuess = intValue?.toInt() ?: -1
                         if (gameUiState.count == 10) {
