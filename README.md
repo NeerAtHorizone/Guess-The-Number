@@ -1,17 +1,15 @@
 # Guess the Number
-A Kotlin Android game where YOU guess a number and get a score that help you to know if you can trust on your guess in an MCQ exams 😎 ( Yes, this was basically the motivation to build the app 😅😅😅).
+A Kotlin Android game where YOU guess a number and get a score that help you to know if you can trust on your guess in the next upcoming MCQ exams 😎 ( Yes, this was the motivation to build this app 😅😅😅).
 ## Features
 - Fun guessing game
 - Highscore tracking
-- Multiple difficulty levels
+- Multiple difficulty levels (yet to implement)
 - Simple and clean UI
 ## Installation
-1. Clone the repo
-2. Open in Android Studio
-3. Build and run on emulator or device
+0. Deployed on itch.io, the link -> https://the-rain-lab.itch.io/guess-the-number
 ## How to Play
 1. Open app
 2. Enter a number between 1 and 10 (for level: easy)
-3. Try to guess the correct number as many as possible in 10 attempts to score high( literally in game, not sure about exams 😅)
+3. Try to guess the correct number as many times as possible in 10 attempts to score high( literally in game, not sure about exams 😅)
 ## Author
 Neeraj Sharma
