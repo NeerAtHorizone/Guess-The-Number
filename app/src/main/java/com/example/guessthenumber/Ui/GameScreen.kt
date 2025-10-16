@@ -3,6 +3,7 @@ package com.example.guessthenumber.Ui
 import android.app.Activity
 import androidx.compose.ui.platform.LocalContext
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -65,16 +66,21 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import kotlinx.coroutines.delay
 
 @Composable
 fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
+
+
+
     Column {
         Scaffold(
             topBar = { GameTopBar() },
@@ -212,6 +218,7 @@ fun GameLayout(
     val text = remember { mutableStateOf("") }
     var playerGuess: Int by remember { mutableIntStateOf(-1) }
     var secretNumberForLastGuess by remember { mutableStateOf<Int?>(null) }
+
     // Animation variables to show comparison between numbers
     var showComparisonAnimation by remember { mutableStateOf(false) }
 
@@ -221,6 +228,17 @@ fun GameLayout(
             .padding(dimensionResource(R.dimen.paddingMedium))
     )
     {
+
+        // sound effect on click
+        val context = LocalContext.current
+        val mediaPlayer = remember { MediaPlayer.create(context, R.raw.confirm_tap_sound ) }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                mediaPlayer.release()
+            }
+        }
+
         Card(
             modifier = Modifier
                 .padding(24.dp)
@@ -250,8 +268,10 @@ fun GameLayout(
                 OutlinedTextField(
                     value = text.value,
                     onValueChange = {
-                        if (it.all { char -> char.isDigit() })
+                        if (it.all { char -> char.isDigit() && it.isNotBlank() }){
                             text.value = it
+                            playerGuess = if(it.isNotBlank()) it.toInt() else -1
+                        }
                     },
                     label = {
                         when (level) {
@@ -260,7 +280,7 @@ fun GameLayout(
                             Levels.HARD -> Text("Guess between 1- 100")
                         }
                     },
-                    placeholder = { Text("So, What it is?") },
+                    placeholder = { Text("the number?🤔")},
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
@@ -295,6 +315,9 @@ fun GameLayout(
                 Button(
                     onClick = {
                         // todo : onCheck button click
+
+                        mediaPlayer.start()
+
                         val intValue: Int? = text.value.toIntOrNull()
                         playerGuess = intValue?.toInt() ?: -1
                         if (gameUiState.count == 10) {
@@ -310,6 +333,7 @@ fun GameLayout(
                         showComparisonAnimation = false
                         showComparisonAnimation = true
                     },
+                    enabled = playerGuess != -1,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
@@ -377,7 +401,14 @@ fun GameLayout(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(if (guessedLebel == "FAR") Color(0xFFFDAAAA) else if (guessedLebel == "CLOSE") Color(0xFFF4991A) else if (guessedLebel == "ACCURATE") Color(0xFF59AC77) else Color.Gray)
+                        .background(
+                            when (guessedLebel) {
+                                "FAR" -> Color(0xFFFDAAAA)
+                                "CLOSE" -> Color(0xFFF4991A)
+                                "ACCURATE" -> Color(0xFF59AC77)
+                                else -> Color.Gray
+                            }
+                        )
                         .padding(dimensionResource(R.dimen.paddingLarge)),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -413,7 +444,7 @@ fun GameLayout(
 
     if (showComparisonAnimation) {
         LaunchedEffect(Unit) {
-            delay(1000L) // Wait for 2.5 seconds
+            delay(1000L) // Wait for 1 second
             showComparisonAnimation = false
         }
     }
@@ -430,8 +461,8 @@ fun GameLayout(
                 secretNumberForLastGuess = null // Reset for new game
                 guessedLebel = "" // Reset for new game
             },
-            dialogTitle = "Final Score",
-            dialogText = "Your Average is : "
+            dialogTitle = "Scored: ${gameUiState.score * 2}",
+            dialogText = "Well guess is ${gameUiState.score * 2}% accurate"
         )
     }
 }
@@ -452,8 +483,8 @@ fun AvgDialoageBox(
                 contentDescription = null
             )
         },
-        title = { Text("$dialogTitle Your Average Winning Guess") },
-        text = { "$dialogText your total score is : " },
+        title = { Text(text = dialogTitle) },
+        text = { Text(text = dialogText, textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Bold)},
         onDismissRequest = { onDismissRequest() },
         confirmButton = {
             TextButton(
@@ -461,7 +492,7 @@ fun AvgDialoageBox(
                     onConfirmation()
                 }
             ) {
-                Text("Play again")
+                 Text("Play again")
             }
         },
         dismissButton = {

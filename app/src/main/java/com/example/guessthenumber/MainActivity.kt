@@ -43,5 +43,4 @@ fun DefaultPreview(){
 // todo: add share icon feature
 // todo: update highest score avg
 // todo: 01 add sound
-// todo: 02 add ad sense
 // todo: 03 deploy on itch.io
